@@ -123,6 +123,7 @@ let
       ServiceTypes = [ "Plasma/LookAndFeel" ];
       Website = "https://github.com/danth/stylix";
     };
+    KPackageStructure = "Plasma/LookAndFeel";
   };
 
   lookAndFeelDefaults = {
@@ -221,51 +222,18 @@ let
   '';
 
 in {
-  options.stylix.targets.kde.enable =
-    config.lib.stylix.mkEnableTarget "KDE" true;
+  options.stylix.targets.kde = {
+    enable = config.lib.stylix.mkEnableTarget "KDE" true;
+    themePackage = lib.mkOption {
+      description = "Stylix KDE theme package";
+      type = lib.types.package;
+      readOnly = true;
+      default = themePackage;
+    };
+  };
 
   config = lib.mkIf (config.stylix.enable && config.stylix.targets.kde.enable && pkgs.stdenv.hostPlatform.isLinux) {
     home.packages = [ themePackage ];
     xdg.systemDirs.config = [ "${configPackage}" ];
-
-    # plasma-apply-wallpaperimage is necessary to change the wallpaper
-    # after the first login.
-    #
-    # plasma-apply-lookandfeel is only here to trigger a hot reload, the theme
-    # would still be applied without it if you logged out and back in.
-    #
-    # Home Manager clears $PATH before running the activation script, but we
-    # want to avoid installing these tools explicitly because that would pull
-    # in large dependencies for people who aren't actually using KDE.
-    # The workaround used is to assume a list of common paths where the tools
-    # might be installed, and look there. The ideal solution would require
-    # changes to KDE to make it possible to update the wallpaper through
-    # config files alone.
-    home.activation.stylixLookAndFeel = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      global_path() {
-        for directory in /run/current-system/sw/bin /usr/bin /bin; do
-          if [[ -f "$directory/$1" ]]; then
-            printf '%s\n' "$directory/$1"
-            return 0
-          fi
-        done
-
-        return 1
-      }
-
-      if wallpaper_image="$(global_path plasma-apply-wallpaperimage)"; then
-        "$wallpaper_image" "${themePackage}/share/wallpapers/stylix"
-      else
-        verboseEcho \
-          "plasma-apply-wallpaperimage: command not found"
-      fi
-
-      if look_and_feel="$(global_path plasma-apply-lookandfeel)"; then
-        "$look_and_feel" --apply stylix
-      else
-        verboseEcho \
-          "Skipping plasma-apply-lookandfeel: command not found"
-      fi
-    '';
   };
 }

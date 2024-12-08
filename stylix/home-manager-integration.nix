@@ -123,6 +123,34 @@ let
         {
           path = [
             "stylix"
+            "iconTheme"
+            "enable"
+          ];
+        }
+        {
+          path = [
+            "stylix"
+            "iconTheme"
+            "package"
+          ];
+        }
+        {
+          path = [
+            "stylix"
+            "iconTheme"
+            "dark"
+          ];
+        }
+        {
+          path = [
+            "stylix"
+            "iconTheme"
+            "light"
+          ];
+        }
+        {
+          path = [
+            "stylix"
             "image"
           ];
         }
@@ -165,8 +193,7 @@ let
             "stylix"
             "override"
           ];
-          condition =
-            homeConfig: config.stylix.base16Scheme == homeConfig.stylix.base16Scheme;
+          condition = homeConfig: config.stylix.base16Scheme == homeConfig.stylix.base16Scheme;
         }
         {
           path = [
@@ -216,9 +243,9 @@ in
 
   config = lib.optionalAttrs (options ? home-manager) (
     lib.mkIf config.stylix.homeManagerIntegration.autoImport {
-      home-manager.sharedModules =
-        [ homeManagerModule ]
-        ++ (lib.optionals config.stylix.homeManagerIntegration.followSystem copyModules);
+      home-manager.sharedModules = [
+        homeManagerModule
+      ] ++ (lib.optionals config.stylix.homeManagerIntegration.followSystem copyModules);
     }
   );
 }

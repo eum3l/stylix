@@ -27,6 +27,10 @@ let
       { path = [ "stylix" "fonts" "sizes" "applications" ]; }
       { path = [ "stylix" "fonts" "sizes" "terminal" ]; }
       { path = [ "stylix" "fonts" "sizes" "popups" ]; }
+      { path = [ "stylix" "iconTheme" "enable" ]; }
+      { path = [ "stylix" "iconTheme" "package" ]; }
+      { path = [ "stylix" "iconTheme" "dark" ]; }
+      { path = [ "stylix" "iconTheme" "light" ]; }
       { path = [ "stylix" "image" ]; }
       { path = [ "stylix" "imageScalingMode" ]; }
       { path = [ "stylix" "opacity" "desktop" ]; }
